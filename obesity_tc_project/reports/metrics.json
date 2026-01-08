@@ -1,0 +1,88 @@
+{
+  "acuracia": 0.9739952718676123,
+  "n_treino": 1688,
+  "n_teste": 423,
+  "classes": [
+    "Peso insuficiente",
+    "Peso normal",
+    "Obesidade tipo I",
+    "Obesidade tipo II",
+    "Obesidade tipo III",
+    "Sobrepeso nível I",
+    "Sobrepeso nível II"
+  ],
+  "classes_original": [
+    "Insufficient_Weight",
+    "Normal_Weight",
+    "Obesity_Type_I",
+    "Obesity_Type_II",
+    "Obesity_Type_III",
+    "Overweight_Level_I",
+    "Overweight_Level_II"
+  ],
+  "matriz_confusao": [
+    [
+      53,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      57,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    [
+      0,
+      0,
+      70,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      59,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      1,
+      64,
+      0,
+      0
+    ],
+    [
+      0,
+      6,
+      0,
+      0,
+      0,
+      52,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      57
+    ]
+  ]
+}
