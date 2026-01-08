@@ -33,8 +33,9 @@ MAPA_FREQUENCIA = {
     "Always": "sempre",
 }
 
-DATA_PATH = Path("data/raw/Obesity.csv")
-CAMINHO_BASE_TRADUZIDA = Path("data/processed/base_traduzida_ptbr.csv")
+BASE_DIR = Path(__file__).resolve().parents[1]
+DATA_PATH = BASE_DIR / "data/raw/Obesity.csv"
+CAMINHO_BASE_TRADUZIDA = BASE_DIR / "data/processed/base_traduzida_ptbr.csv"
 ORDEM_NIVEIS = list(MAPA_NIVEL_OBESIDADE.values())
 ROTULOS_NUMERICOS = {
     "Age": "Idade",

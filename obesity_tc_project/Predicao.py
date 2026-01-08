@@ -8,9 +8,10 @@ from src.obesity_tc.make_dataset import atualizar_base_ptbr
 
 st.set_page_config(page_title="Sistema de Predição de Obesidade", layout="wide")
 
-CAMINHO_MODELO = Path("models/modelo_obesidade.joblib")
-CAMINHO_BASE = Path("data/raw/Obesity.csv")
-CAMINHO_BASE_TRADUZIDA = Path("data/processed/base_traduzida_ptbr.csv")
+BASE_DIR = Path(__file__).resolve().parent
+CAMINHO_MODELO = BASE_DIR / "models/modelo_obesidade.joblib"
+CAMINHO_BASE = BASE_DIR / "data/raw/Obesity.csv"
+CAMINHO_BASE_TRADUZIDA = BASE_DIR / "data/processed/base_traduzida_ptbr.csv"
 
 MAPA_GENERO = {"Female": "Feminino", "Male": "Masculino"}
 MAPA_SIM_NAO = {"yes": "Sim", "no": "Não"}

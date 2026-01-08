@@ -8,10 +8,11 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 
 from src.obesity_tc.make_dataset import preprocessar_base
 
-MODEL_PATH = Path("models/modelo_obesidade.joblib")
-DATA_PATH = Path("data/raw/Obesity.csv")
-METRICS_PATH = Path("reports/metrics.json")
-REPORT_PATH = Path("reports/classification_report.txt")
+BASE_DIR = Path(__file__).resolve().parents[1]
+MODEL_PATH = BASE_DIR / "models/modelo_obesidade.joblib"
+DATA_PATH = BASE_DIR / "data/raw/Obesity.csv"
+METRICS_PATH = BASE_DIR / "reports/metrics.json"
+REPORT_PATH = BASE_DIR / "reports/classification_report.txt"
 
 MAPA_NIVEL_OBESIDADE = {
     "Insufficient_Weight": "Peso insuficiente",
