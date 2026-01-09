@@ -32,8 +32,7 @@ st.title("Métricas e documentação do modelo")
 st.markdown(
     """
 ### Predição de nível de obesidade
-Bem-vindo à documentação do projeto Tech Challenge - Fase 4. Este trabalho foi
-desenvolvido para apoiar a avaliação do nível de obesidade a partir de dados de perfil
+Este trabalho foi desenvolvido para apoiar a avaliação do nível de obesidade a partir de dados de perfil
 e hábitos de vida.
 
 ### Objetivo do projeto

@@ -256,4 +256,3 @@ with col_resultado:
         st.info("Preencha as entradas e clique em **Prever**.")
 
 st.divider()
-st.caption("Pipeline: RandomForest + OneHotEncoder + MinMaxScaler.")
