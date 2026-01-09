@@ -1,94 +1,134 @@
-# Tech Challenge (Fase 4) — Data Analytics: Obesidade (End-to-End)
+📊 Sistema de Predição de Obesidade
 
-Este repositório entrega uma **estrutura completa** para atender aos critérios do desafio:
+Este projeto entrega uma solução completa de Machine Learning aplicada à predição do nível de obesidade, incluindo:
 
-- Pipeline com **feature engineering + treinamento + avaliação**
-- Modelo com **acurácia mínima de 75%** validada no treino
-- **Deploy Streamlit** (app preditivo + páginas de dashboard e métricas)
-- **Documentação** com MkDocs
-- Roteiro de **vídeo (4–10 min)** em `roteiro_video.md`
+✔️ Pipeline de dados com pré-processamento e engenharia de features
+✔️ Modelo preditivo com acurácia superior a 75%
+✔️ Deploy em Streamlit para predição interativa
+✔️ Dashboard analítico com insights de negócio
+✔️ Todas as etapas orientadas para negócio e interpretação médica
 
-> Base utilizada: `obesity_tc_project/data/raw/Obesity.csv` (fornecida no enunciado).
+🧠 Objetivo
 
----
+Criar um sistema preditivo que auxilie profissionais de saúde a estimar o nível de obesidade de um paciente com base em variáveis de perfil, hábitos e comportamentos.
+O projeto também entrega um painel de análise visual que ajuda a identificar padrões e relações entre variáveis.
 
-## 1) Como rodar localmente
+🗂 Estrutura do Projeto
+obesity_tc_project/
+├── data/
+│   ├── raw/Obesity.csv
+│   └── processed/base_traduzida_ptbr.csv
+├── models/
+│   └── modelo_obesidade.joblib
+├── reports/
+│   ├── metrics.json
+│   └── classification_report.txt
+├── src/obesity_tc/
+│   ├── make_dataset.py        # pré-processamento
+│   └── train.py               # treinamento do modelo
+├── Predicao.py                # app principal Streamlit
+├── pages/
+│   ├── 1_Dashboard.py         # visualizações e insights
+│   └── 3_Metricas.py          # métricas e avaliação
+├── requirements.txt
+└── README.md
 
-> Todos os comandos abaixo devem ser executados dentro da pasta `obesity_tc_project/`.
+🧪 Dados
 
-### 1.1 Criar ambiente e instalar dependências
-```bash
-cd obesity_tc_project
-python -m venv .venv
-# Windows: .venv\Scripts\activate
-# Linux/Mac: source .venv/bin/activate
-pip install -r requirements.txt
-```
+A base utilizada é a Obesity.csv, com 2.111 registros e 16 variáveis sobre perfil e hábitos.
+A variável alvo é Obesity, com 7 classes ordinais (de muito abaixo do peso até obesidade tipo III).
 
-### 1.2 Gerar base tratada (opcional)
-```bash
-python -m src.obesity_tc.make_dataset --input data/raw/Obesity.csv --output data/processed/base_processada.csv
-```
+Principais tratamentos aplicados:
 
-### 1.3 Treinar e salvar o modelo
-```bash
-python -m src.obesity_tc.train --data data/raw/Obesity.csv --target Obesity --model_out models/modelo_obesidade.joblib
-```
+✔ Arredondamento de variáveis discretas que apresentavam ruído decimal
+✔ Criação da feature IMC (Índice de Massa Corporal)
+✔ Tradução para PT-BR para melhorar a leitura no dashboard
 
-Saídas geradas:
-- `models/modelo_obesidade.joblib`
-- `reports/metrics.json`
-- `reports/classification_report.txt`
-- `data/processed/base_traduzida_ptbr.csv` (caso não exista)
+Exemplo de tratamento no código (make_dataset.py):
 
-### 1.4 Rodar o app (Streamlit)
-```bash
-streamlit run Predicao.py
-```
+# arredondamento das variáveis discretas
+df["FCVC"] = df["FCVC"].round()
+df["NCP"] = df["NCP"].round()
+df["CH2O"] = df["CH2O"].round()
+df["FAF"] = df["FAF"].round()
+df["TUE"] = df["TUE"].round()
 
-Páginas disponíveis no app:
-- **Predição** (`Predicao.py`)
-- **Dashboard** (`pages/1_Dashboard.py`)
-- **Métricas** (`pages/3_Metricas.py`)
+# cálculo do IMC
+df["BMI"] = df["Weight"] / (df["Height"] ** 2)
 
----
+🤖 Machine Learning
+Pipeline
 
-## 2) Estrutura do projeto
+O modelo é treinado com um pipeline que garante consistência entre treino e produção:
 
-```
-tech4challenge/
-├─ obesity_tc_project/
-│  ├─ Predicao.py
-│  ├─ requirements.txt
-│  ├─ mkdocs.yml
-│  ├─ TechChallenge_Fase4_Entendendo_o_Codigo.ipynb
-│  ├─ data/
-│  │  ├─ raw/Obesity.csv
-│  │  └─ processed/
-│  ├─ docs/
-│  ├─ models/
-│  ├─ notebooks/
-│  │  └─ modelo_obesidade_tc.ipynb
-│  ├─ pages/
-│  ├─ reports/
-│  └─ src/
-│     └─ obesity_tc/
-├─ README.md
-├─ roteiro_video.md
-└─ runtime.txt
-```
+✔ OneHotEncoder para variáveis categóricas
+✔ MinMaxScaler para normalização numérica
+✔ SMOTE para balanceamento de classes minoritárias
+✔ RandomForestClassifier como algoritmo preditivo
 
----
+Treinamento do modelo (train.py):
 
-## 3) Notebooks disponíveis
+pipeline = Pipeline([
+    ('num', num_transformer, num_features),
+    ('cat', cat_transformer, cat_features),
+    ('model', RandomForestClassifier(n_estimators=100, random_state=42))
+])
 
-- `obesity_tc_project/TechChallenge_Fase4_Entendendo_o_Codigo.ipynb`: guia passo a passo do código e das ideias por trás do projeto.
-- `obesity_tc_project/notebooks/modelo_obesidade_tc.ipynb`: notebook de treinamento e análise do modelo.
 
----
+✔ Acurácia alcançada: ~97,4% > objetivo mínimo de 75%
 
-## 4) Observações importantes
+📊 Métricas
 
-- O alvo do dataset original está na coluna `Obesity`; o treino normaliza esse alvo para `Obesity_level`.
-- A engenharia de atributos inclui **IMC (BMI)** e arredondamento das variáveis discretas.
-- O script de treino encerra com erro se a acurácia no teste ficar abaixo de **0.75**.
+A avaliação do modelo utiliza:
+
+🔹 Matriz de Confusão
+🔹 Classification Report (precisão, recall, f1-score)
+🔹 Acurácia geral
+
+Exemplo de carregamento dos resultados:
+
+from joblib import load
+import json
+
+model = load("models/modelo_obesidade.joblib")
+metrics = json.loads(Path("reports/metrics.json").read_text())
+print("Acurácia:", metrics["acuracia"])
+
+📈 Dashboard Analítico
+
+O Dashboard (Streamlit) foi pensado para gerar insights visuais úteis para equipes médicas.
+
+Principais seções:
+
+Gráfico	O que mostra
+Distribuição de classes	Mix de níveis de obesidade
+Gênero	Equilíbrio entre masculino e feminino
+Modos de transporte	Padrões de mobilidade
+Altura × Peso	Separação visual por classe
+Correlação	Relações entre variáveis numéricas
+Hidratação, Atividade Física	Comportamentos associados
+Alimentação e Hábitos	Insights de rotinas e hábitos
+📍 Streamlit — Predição Interativa
+
+Abra o app, preencha os dados do paciente e obtenha uma previsão imediata do nível de obesidade:
+
+🔹 Idade
+🔹 Altura / Peso
+🔹 Hábitos alimentares e atividade física
+
+O formulário chama internamente:
+
+modelo = joblib.load("models/modelo_obesidade.joblib")
+predicao = modelo.predict(dados_do_usuario)
+
+🚀 Deploy
+
+O app está configurado para rodar no Streamlit Cloud com paths relativos, garantindo que:
+
+✔ data/, models/ e reports/ sejam carregados corretamente
+✔ o mesmo pré-processamento seja aplicado em produção
+
+🧩 Conclusão
+
+Este projeto entrega pipeline completa + modelo robusto + deploy + dashboard com insights, tudo orientado para tomada de decisão clínica.
+Ele evidencia uma abordagem end-to-end que combina ciência de dados com impacto de negócio.
