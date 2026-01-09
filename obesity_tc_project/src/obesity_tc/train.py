@@ -1,20 +1,15 @@
 import argparse
 import json
 from pathlib import Path
-
-import numpy as np
 import pandas as pd
 from joblib import dump
-
 from sklearn.model_selection import train_test_split
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder, MinMaxScaler
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from sklearn.ensemble import RandomForestClassifier
-
 from imblearn.over_sampling import SMOTE
 from imblearn.pipeline import Pipeline as ImbPipeline
-
 from src.obesity_tc.make_dataset import preprocessar_base
 
 MAPA_NIVEL_OBESIDADE = {
@@ -29,6 +24,7 @@ MAPA_NIVEL_OBESIDADE = {
 
 
 def build_pipeline(colunas_numericas, colunas_categoricas, random_state=42):
+    # Prepara transformações específicas para numéricas e categóricas.
     pre = ColumnTransformer(
         transformers=[
             ("num", MinMaxScaler(), colunas_numericas),
@@ -37,6 +33,7 @@ def build_pipeline(colunas_numericas, colunas_categoricas, random_state=42):
         remainder="drop",
     )
 
+    # Modelo principal do projeto.
     clf = RandomForestClassifier(
         n_estimators=500,
         random_state=random_state,
@@ -44,6 +41,7 @@ def build_pipeline(colunas_numericas, colunas_categoricas, random_state=42):
         class_weight=None,
     )
 
+    # Pipeline completo com balanceamento via SMOTE.
     pipe = ImbPipeline(
         steps=[
             ("preprocess", pre),
@@ -71,6 +69,7 @@ def main():
     )
     args = parser.parse_args()
 
+    # Carrega dados brutos e aplica pré-processamento padrão.
     df_bruto = pd.read_csv(args.data)
     df_limpo = preprocessar_base(df_bruto, coluna_alvo=args.target)
 
@@ -80,11 +79,13 @@ def main():
     alvo = df_limpo["Obesity_level"]
     entradas = df_limpo.drop(columns=["Obesity_level"])
 
+    # Separa colunas numéricas e categóricas para o pipeline.
     colunas_numericas = [
         c for c in entradas.columns if pd.api.types.is_numeric_dtype(entradas[c])
     ]
     colunas_categoricas = [c for c in entradas.columns if c not in colunas_numericas]
 
+    # Divide treino e teste com estratificação por classe.
     entradas_treino, entradas_teste, alvo_treino, alvo_teste = train_test_split(
         entradas,
         alvo,
@@ -93,11 +94,13 @@ def main():
         stratify=alvo,
     )
 
+    # Treina o pipeline completo.
     pipe = build_pipeline(
         colunas_numericas, colunas_categoricas, random_state=args.random_state
     )
     pipe.fit(entradas_treino, alvo_treino)
 
+    # Avalia o modelo no conjunto de teste.
     predicoes = pipe.predict(entradas_teste)
     acuracia = float(accuracy_score(alvo_teste, predicoes))
 
@@ -107,6 +110,7 @@ def main():
     classes_ordenadas = sorted(alvo.unique().tolist())
     classes_pt = [MAPA_NIVEL_OBESIDADE.get(c, c) for c in classes_ordenadas]
 
+    # Consolida métricas e matriz de confusão para relatório.
     metricas = {
         "acuracia": acuracia,
         "n_treino": int(len(entradas_treino)),
@@ -118,6 +122,7 @@ def main():
         ).tolist(),
     }
 
+    # Salva relatórios para uso no app e documentação.
     (dir_relatorios / "metrics.json").write_text(
         json.dumps(metricas, indent=2, ensure_ascii=False), encoding="utf-8"
     )
@@ -132,7 +137,7 @@ def main():
         encoding="utf-8",
     )
 
-    # Salva modelo
+    # Salva o bundle do modelo treinado.
     model_path = Path(args.model_out)
     model_path.parent.mkdir(parents=True, exist_ok=True)
     dump(

@@ -4,6 +4,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+# Colunas discretas que chegam com ruído decimal e precisam de arredondamento.
 COLUNAS_DISCRETAS_ARREDONDAR = ["FCVC", "NCP", "CH2O", "FAF", "TUE"]
 
 COLUNAS_PT_BR = {
@@ -77,6 +78,7 @@ def preprocessar_base(df: pd.DataFrame, coluna_alvo: str = "Obesity") -> pd.Data
                 "Int64"
             )
 
+    # Calcula o IMC para uso no treino e análises.
     df = calcular_imc(df)
 
     # Normaliza nome do alvo (interno).
@@ -88,6 +90,7 @@ def preprocessar_base(df: pd.DataFrame, coluna_alvo: str = "Obesity") -> pd.Data
 def traduzir_ptbr(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
 
+    # Traduz valores categóricos para PT-BR.
     if "Gender" in df.columns:
         df["Gender"] = df["Gender"].map(MAPA_GENERO_PT).fillna(df["Gender"])
 
@@ -106,6 +109,7 @@ def traduzir_ptbr(df: pd.DataFrame) -> pd.DataFrame:
         if coluna in df.columns:
             df[coluna] = df[coluna].map(MAPA_NIVEL_OBESIDADE_PT).fillna(df[coluna])
 
+    # Traduz nomes das colunas para facilitar visualização.
     df = df.rename(columns={k: v for k, v in COLUNAS_PT_BR.items() if k in df.columns})
     return df
 
@@ -116,6 +120,7 @@ def salvar_base_ptbr(
 ) -> Path:
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
+    # Salva base traduzida em UTF-8 para uso no dashboard.
     df_traduzido = traduzir_ptbr(df)
     df_traduzido.to_csv(output_path, index=False, encoding="utf-8")
     return output_path
@@ -130,6 +135,7 @@ def atualizar_base_ptbr(
     output_path = Path(output_path)
     if not data_path.exists():
         return None
+    # Evita retrabalho se a base traduzida já estiver atualizada.
     if output_path.exists() and output_path.stat().st_mtime >= data_path.stat().st_mtime:
         return output_path
     df_raw = pd.read_csv(data_path)

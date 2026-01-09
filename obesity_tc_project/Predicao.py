@@ -8,11 +8,13 @@ from src.obesity_tc.make_dataset import atualizar_base_ptbr
 
 st.set_page_config(page_title="Sistema de Predição de Obesidade", layout="wide")
 
+# Caminhos base do projeto para localizar dados e modelo.
 BASE_DIR = Path(__file__).resolve().parent
 CAMINHO_MODELO = BASE_DIR / "models/modelo_obesidade.joblib"
 CAMINHO_BASE = BASE_DIR / "data/raw/Obesity.csv"
 CAMINHO_BASE_TRADUZIDA = BASE_DIR / "data/processed/base_traduzida_ptbr.csv"
 
+# Mapas de tradução para exibição amigável no app.
 MAPA_GENERO = {"Female": "Feminino", "Male": "Masculino"}
 MAPA_SIM_NAO = {"yes": "Sim", "no": "Não"}
 MAPA_FREQUENCIA = {
@@ -69,6 +71,7 @@ def ler_modelo():
     return load(CAMINHO_MODELO)
 
 
+# Garante a base traduzida atualizada para o dashboard.
 atualizar_base_ptbr(
     data_path=CAMINHO_BASE,
     output_path=CAMINHO_BASE_TRADUZIDA,
@@ -80,6 +83,7 @@ st.caption(
     "Modelo preditivo multiclasse para apoiar a avaliação do nível de obesidade."
 )
 
+# Carrega o modelo treinado ou interrompe com mensagem clara.
 try:
     pacote_modelo = ler_modelo()
 except FileNotFoundError as exc:
@@ -89,6 +93,7 @@ except FileNotFoundError as exc:
 
 pipeline_modelo = pacote_modelo["pipeline"]
 
+# Coleta das entradas do usuário no sidebar.
 with st.sidebar:
     st.header("Entradas do paciente")
 
@@ -157,6 +162,7 @@ with st.sidebar:
 
     botao_prever = st.button("Prever")
 
+# Monta um registro com as mesmas colunas usadas no treino.
 linha = {
     "Gender": genero,
     "Age": float(idade),
@@ -177,9 +183,11 @@ linha = {
 }
 
 dados_entrada = pd.DataFrame([linha])
+# Calcula IMC para uso no modelo e no resumo do paciente.
 dados_entrada["BMI"] = dados_entrada["Weight"] / (dados_entrada["Height"] ** 2)
 imc = float(dados_entrada["BMI"].iloc[0])
 
+# Converte valores para rótulos legíveis na tabela de exibição.
 dados_exibicao = dados_entrada.copy()
 for coluna, mapa in {
     "Gender": MAPA_GENERO,
@@ -230,6 +238,7 @@ with col_dados:
 with col_resultado:
     st.subheader("Resultado da predição")
     if botao_prever:
+        # Executa a predição apenas quando solicitado.
         predicao = pipeline_modelo.predict(dados_entrada)[0]
         predicao_pt = MAPA_NIVEL_OBESIDADE.get(predicao, predicao)
         st.success(f"Nível previsto: **{predicao_pt}**")
