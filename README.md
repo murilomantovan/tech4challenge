@@ -1,94 +1,46 @@
-# Tech Challenge (Fase 4) — Data Analytics: Obesidade (End-to-End)
+🧠 Modelo de Machine Learning para Previsão de Obesidade  
+Tech Challenge – Fase 4 (Data Analytics)
 
-Este repositório entrega uma **estrutura completa** para atender aos critérios do desafio:
+📋 Sobre o Projeto  
+Este repositório reúne o desenvolvimento completo do Tech Challenge, com foco na construção de um modelo preditivo de obesidade e na entrega de uma aplicação em Streamlit acompanhada de um dashboard analítico. A solução foi pensada para apoiar equipes médicas com informação clara, organizada e baseada em dados.
 
-- Pipeline com **feature engineering + treinamento + avaliação**
-- Modelo com **acurácia mínima de 75%** validada no treino
-- **Deploy Streamlit** (app preditivo + páginas de dashboard e métricas)
-- **Documentação** com MkDocs
-- Roteiro de **vídeo (4–10 min)** em `roteiro_video.md`
+🎯 Objetivos do Projeto  
+- Realizar análise exploratória da base Obesity.csv.  
+- Construir um pipeline de pré-processamento e engenharia de atributos.  
+- Treinar e selecionar um modelo com desempenho adequado para o problema.  
+- Implementar uma aplicação preditiva no Streamlit para uso prático.  
+- Criar um dashboard analítico com insights relevantes.  
+- Manter documentação organizada e reprodutível.  
 
-> Base utilizada: `obesity_tc_project/data/raw/Obesity.csv` (fornecida no enunciado).
+🏥 Contexto do Problema  
+A obesidade é uma condição multifatorial ligada a hábitos alimentares, estilo de vida, genética e fatores ambientais. Antecipar o risco de obesidade contribui para ações preventivas e decisões clínicas mais rápidas. O modelo utiliza variáveis relacionadas à alimentação, atividade física, consumo de água, álcool, tabagismo e uso de tecnologia para apoiar essa análise.
 
----
+🚀 Aplicação no Streamlit  
+O app está disponível em: https://murilomantovan-tech4challenge-obesity-tc-projectpredicao-nhs1az.streamlit.app/  
+Nele, o usuário preenche informações do paciente e recebe a previsão do nível de obesidade de forma interativa.
 
-## 1) Como rodar localmente
+📘 Documentação  
+A documentação do projeto é organizada com MkDocs e mantém a explicação do fluxo de dados, modelagem e uso da aplicação.
 
-> Todos os comandos abaixo devem ser executados dentro da pasta `obesity_tc_project/`.
+🗂 Estrutura do Projeto  
+- obesity_tc_project: aplicação e código principal do projeto.  
+- Predicao.py: app principal do Streamlit.  
+- pages: páginas do dashboard e da documentação de métricas.  
+- src/obesity_tc: tratamento de dados e treinamento do modelo.  
+- data: dados brutos e processados.  
+- models e reports: artefatos do treinamento e relatórios.  
+- notebooks: análises e experimentos em notebook.  
+- docs e mkdocs.yml: estrutura da documentação.  
+- roteiro_video.md: roteiro para apresentação.  
 
-### 1.1 Criar ambiente e instalar dependências
-```bash
-cd obesity_tc_project
-python -m venv .venv
-# Windows: .venv\Scripts\activate
-# Linux/Mac: source .venv/bin/activate
-pip install -r requirements.txt
-```
+📊 Dados  
+A base reúne variáveis sobre hábitos alimentares, atividade física, consumo de água e álcool, tabagismo, uso de tecnologia e medidas corporais. A variável-alvo representa níveis de obesidade, do peso insuficiente até a obesidade mais severa.
 
-### 1.2 Gerar base tratada (opcional)
-```bash
-python -m src.obesity_tc.make_dataset --input data/raw/Obesity.csv --output data/processed/base_processada.csv
-```
+🧪 Metodologia  
+O projeto segue um fluxo completo de ciência de dados, incluindo tratamento e limpeza, engenharia de atributos, modelagem supervisionada e entrega em produção via Streamlit. O pipeline garante consistência entre treino e uso em produção.
 
-### 1.3 Treinar e salvar o modelo
-```bash
-python -m src.obesity_tc.train --data data/raw/Obesity.csv --target Obesity --model_out models/modelo_obesidade.joblib
-```
+📈 Dashboard Analítico  
+O painel apresenta visualizações que ajudam a entender a distribuição das classes, padrões de comportamento e relações entre variáveis que influenciam o risco de obesidade.
 
-Saídas geradas:
-- `models/modelo_obesidade.joblib`
-- `reports/metrics.json`
-- `reports/classification_report.txt`
-- `data/processed/base_traduzida_ptbr.csv` (caso não exista)
-
-### 1.4 Rodar o app (Streamlit)
-```bash
-streamlit run Predicao.py
-```
-
-Páginas disponíveis no app:
-- **Predição** (`Predicao.py`)
-- **Dashboard** (`pages/1_Dashboard.py`)
-- **Métricas** (`pages/3_Metricas.py`)
-
----
-
-## 2) Estrutura do projeto
-
-```
-tech4challenge/
-├─ obesity_tc_project/
-│  ├─ Predicao.py
-│  ├─ requirements.txt
-│  ├─ mkdocs.yml
-│  ├─ TechChallenge_Fase4_Entendendo_o_Codigo.ipynb
-│  ├─ data/
-│  │  ├─ raw/Obesity.csv
-│  │  └─ processed/
-│  ├─ docs/
-│  ├─ models/
-│  ├─ notebooks/
-│  │  └─ modelo_obesidade_tc.ipynb
-│  ├─ pages/
-│  ├─ reports/
-│  └─ src/
-│     └─ obesity_tc/
-├─ README.md
-├─ roteiro_video.md
-└─ runtime.txt
-```
-
----
-
-## 3) Notebooks disponíveis
-
-- `obesity_tc_project/TechChallenge_Fase4_Entendendo_o_Codigo.ipynb`: guia passo a passo do código e das ideias por trás do projeto.
-- `obesity_tc_project/notebooks/modelo_obesidade_tc.ipynb`: notebook de treinamento e análise do modelo.
-
----
-
-## 4) Observações importantes
-
-- O alvo do dataset original está na coluna `Obesity`; o treino normaliza esse alvo para `Obesity_level`.
-- A engenharia de atributos inclui **IMC (BMI)** e arredondamento das variáveis discretas.
-- O script de treino encerra com erro se a acurácia no teste ficar abaixo de **0.75**.
+✅ Status  
+Projeto preparado para demonstração, validação e apresentação final da fase.
